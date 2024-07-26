@@ -15,7 +15,7 @@ const theme = createTheme({
 	},
 	typography: {
 		fontFamily: ['Poppins'].join(','),
-		fontSize: 12,
+		fontSize: 13,
 	},
 });
 
