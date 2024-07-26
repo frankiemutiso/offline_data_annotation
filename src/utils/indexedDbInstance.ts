@@ -26,8 +26,6 @@ let db!: IDBDatabase;
 openRequest.onupgradeneeded = function () {
 	db = openRequest.result;
 
-	console.log('Database: ', db);
-
 	if (!db.objectStoreNames.contains('documents')) {
 		db.createObjectStore('documents', { keyPath: 'id', autoIncrement: true });
 	}
@@ -131,7 +129,6 @@ export const getPaginatedDocuments = async (page: number, pageSize: number) => {
 		}),
 	])
 		.then((result) => {
-			console.log('Paginated result: ', result);
 			if (!result && new Array(result).length === 0) return;
 			return result[0];
 		})

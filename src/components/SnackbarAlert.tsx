@@ -1,5 +1,4 @@
 import { Alert, Snackbar } from '@mui/material';
-import React from 'react';
 
 type SnackbarAlertProps = {
 	open: boolean;

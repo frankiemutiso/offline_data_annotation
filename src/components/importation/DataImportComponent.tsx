@@ -157,12 +157,27 @@ function DataImportComponent({
 		const reader = new FileReader();
 
 		reader.onload = async ({ target }) => {
-			if (!target) return;
-			const result = target.result;
+			if (!target || target.result === null) return;
+
+			let result: string;
+
+			if (typeof target.result === 'string') {
+				result = target.result;
+			} else if (target.result instanceof ArrayBuffer) {
+				result = new TextDecoder().decode(target.result);
+			} else {
+				console.error('Unexpected result type');
+				return;
+			}
+
 			const csv = Papa.parse(result, {
 				header: true,
 			});
-			const data = csv?.data;
+
+			const data: FileDataType[] = csv?.data as FileDataType[];
+
+			if (!data) return;
+
 			const cols = Object.keys(data[0]).map((x) => ({
 				name: x,
 				selected: false,
