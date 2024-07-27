@@ -28,7 +28,8 @@ type FileType = {
 };
 
 type ColumnType = {
-	selected: boolean;
+	primary: boolean;
+	secondary: boolean;
 	name: string;
 };
 
@@ -134,7 +135,11 @@ function DataImportComponent({
 
 			rows.forEach((d, i) => {
 				if (i === 0) {
-					cols = d.map((x) => ({ name: x, selected: false })) as ColumnType[];
+					cols = d.map((x) => ({
+						name: x,
+						primary: false,
+						secondary: false,
+					})) as ColumnType[];
 					setColumns(cols);
 				} else {
 					let obj: dataType = {};
@@ -180,7 +185,8 @@ function DataImportComponent({
 
 			const cols = Object.keys(data[0]).map((x) => ({
 				name: x,
-				selected: false,
+				secondary: false,
+				primary: false,
 			}));
 			setColumns(cols);
 			setFileData(data);
@@ -238,7 +244,7 @@ function DataImportComponent({
 					}}
 				>
 					<Box>
-						<CloudUploadIcon sx={{ fontSize: 48 }} color='primary' />
+						<CloudUploadIcon sx={{ fontSize: 42 }} color='primary' />
 						<Box
 							sx={{
 								display: 'flex',
@@ -246,8 +252,8 @@ function DataImportComponent({
 								justifyContent: 'center',
 							}}
 						>
-							<Typography variant='h6'>
-								Drop an Excel/CSV file here or{' '}
+							<Typography variant='subtitle1'>
+								<b>Drop an Excel/CSV file here or</b>
 							</Typography>
 							<Button
 								disableElevation

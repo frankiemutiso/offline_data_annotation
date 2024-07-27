@@ -19,7 +19,7 @@ function Classification() {
 					mb: 2,
 				}}
 			>
-				<Box sx={{ display: 'flex', alignItems: 'center' }}>
+				<Box sx={{ display: 'flex', alignItems: 'center', ml: -1 }}>
 					<IconButton onClick={() => navigate('/')}>
 						<ArrowBackIcon />
 					</IconButton>
@@ -37,7 +37,7 @@ function Classification() {
 						startIcon={<DownloadIcon />}
 						onClick={() => downloadLabelledData()}
 					>
-						Download
+						Export
 					</Button>
 				</Box>
 			</Box>

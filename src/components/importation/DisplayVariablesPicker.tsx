@@ -19,7 +19,8 @@ type LabelType = {
 };
 
 type ColumnType = {
-	selected: boolean;
+	secondary: boolean;
+	primary: boolean;
 	name: string;
 };
 
@@ -72,31 +73,65 @@ function DisplayVariablesPicker({
 		setLabels(labelCopy);
 	};
 
-	const handleClick = (newSelected: ColumnType) => {
+	const handleClick = (
+		newSelected: ColumnType,
+		columnType: 'primary' | 'secondary'
+	) => {
 		const columnsCopy = [...columns];
 
-		const currentSelectedIndex = columns.findIndex(
-			(x: ColumnType) => x.selected === true
-		);
-		const currentSelected = columns.find(
-			(x: ColumnType) => x.selected === true
-		);
-		const selectedIndex = columnsCopy.findIndex(
-			(x) => x.name === newSelected.name
-		);
+		const handlePrimarySelection = () => {
+			const currentSelectedIndex = columns.findIndex(
+				(x: ColumnType) => x.primary
+			);
+			const currentSelected = columns[currentSelectedIndex];
 
-		if (selectedIndex === -1) return;
+			const selectedIndex = columnsCopy.findIndex(
+				(x) => x.name === newSelected.name
+			);
 
-		columnsCopy[selectedIndex] = { name: newSelected.name, selected: true };
+			if (selectedIndex === -1) return;
 
-		if (currentSelected) {
-			columnsCopy[currentSelectedIndex] = {
-				name: currentSelected?.name,
-				selected: false,
+			columnsCopy[selectedIndex] = {
+				name: newSelected.name,
+				primary: columnType === 'primary',
+				secondary: false,
 			};
-		}
 
-		setColumns(columnsCopy);
+			if (currentSelected) {
+				columnsCopy[currentSelectedIndex] = {
+					name: currentSelected?.name,
+					primary: false,
+					secondary: false,
+				};
+			}
+
+			return setColumns(columnsCopy);
+		};
+
+		const handleSecondarySelections = () => {
+			const selectedIndex = columnsCopy.findIndex(
+				(x) => x.name === newSelected.name
+			);
+
+			if (selectedIndex === -1) return;
+
+			columnsCopy[selectedIndex] = {
+				name: newSelected.name,
+				primary: false,
+				secondary: newSelected.secondary ? false : true,
+			};
+
+			return setColumns(columnsCopy);
+		};
+
+		switch (columnType) {
+			case 'primary':
+				return handlePrimarySelection();
+			case 'secondary':
+				return handleSecondarySelections();
+			default:
+				break;
+		}
 	};
 
 	return (
@@ -104,11 +139,11 @@ function DisplayVariablesPicker({
 			sx={{ p: 2, borderRadius: theme.shape.borderRadius, mineight: '54.5vh' }}
 		>
 			<Box sx={{ mb: 2 }}>
-				<Typography sx={{ mb: 1 }}>Select the column to display</Typography>
+				<Typography sx={{ mb: 1 }}>
+					Select the primary column to display
+				</Typography>
 				{columns.map((x: ColumnType) => {
-					const selectedColumn = columns.find(
-						(x: ColumnType) => x.selected === true
-					);
+					const selectedColumn = columns.find((x: ColumnType) => x.primary);
 
 					return (
 						<Chip
@@ -116,7 +151,26 @@ function DisplayVariablesPicker({
 							key={x.name}
 							color={selectedColumn?.name === x.name ? 'primary' : 'default'}
 							sx={{ mr: 1, mb: 1 }}
-							onClick={() => handleClick(x)}
+							onClick={() => handleClick(x, 'primary')}
+						/>
+					);
+				})}
+			</Box>
+			<Divider />
+			<Box sx={{ mb: 2, mt: 2 }}>
+				<Typography sx={{ mb: 1 }}>Select other columns to display</Typography>
+				{columns.map((x: ColumnType) => {
+					const selectedColumns = columns
+						.filter((x: ColumnType) => x.secondary === true)
+						.map((c) => c.name);
+
+					return (
+						<Chip
+							label={x.name}
+							key={x.name}
+							color={selectedColumns.includes(x.name) ? 'primary' : 'default'}
+							sx={{ mr: 1, mb: 1 }}
+							onClick={() => handleClick(x, 'secondary')}
 						/>
 					);
 				})}

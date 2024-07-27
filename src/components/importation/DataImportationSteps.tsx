@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Step, StepLabel, Stepper } from '@mui/material';
+import { Box, Button, Step, StepLabel, Stepper, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import DataImportComponent from './DataImportComponent';
 import DisplayVariablesPicker from './DisplayVariablesPicker';
@@ -9,12 +9,13 @@ import {
 	addDocumentMetadata,
 	addDocuments,
 	addLabels,
+	clearDatabase,
 	getAllColumns,
 	getAllDocuments,
 	getAllLabels,
 } from '../../utils/indexedDbInstance';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 type FileType = {
 	name: string;
 	size: number;
@@ -31,7 +32,8 @@ type LabelType = {
 };
 
 type ColumnType = {
-	selected: boolean;
+	primary: boolean;
+	secondary: boolean;
 	name: string;
 };
 
@@ -52,6 +54,8 @@ function DataImportationSteps() {
 		{ name: '', mode: 'editing' },
 	]);
 	const [dataAvailableBannerOpen, setDataAvailableBannerOpen] = useState(false);
+
+	const theme = useTheme();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -87,6 +91,13 @@ function DataImportationSteps() {
 			if (labels.filter((x) => x.name !== '').length < 2) {
 				return setErrorSnackbarOpen({
 					message: 'Provide at least 2 labels',
+					state: true,
+				});
+			}
+
+			if (!columns.find((x) => x.primary)) {
+				return setErrorSnackbarOpen({
+					message: 'Select the primary column to display',
 					state: true,
 				});
 			}
@@ -152,6 +163,7 @@ function DataImportationSteps() {
 				display: 'flex',
 				flexDirection: 'column',
 				pt: 4,
+				pb: 2,
 			}}
 		>
 			<SnackbarAlert
@@ -167,23 +179,39 @@ function DataImportationSteps() {
 						pb: 4,
 						display: 'flex',
 						alignItems: 'center',
-						alignSelf: 'center',
+						justifyContent: 'space-between',
 					}}
 				>
-					<Alert variant='filled' severity='info'>
-						Data recovered from your previous session. Proceed to data
-						classification?{' '}
-						<Button
-							variant='contained'
-							disableElevation
-							color='secondary'
-							sx={{ ml: { sm: 1, xs: 1 } }}
-							endIcon={<ArrowForwardIcon />}
-							onClick={() => navigate('/data-classification')}
-						>
-							Okay
-						</Button>
-					</Alert>
+					<Button
+						variant='outlined'
+						disableElevation
+						onClick={() => {
+							clearDatabase();
+							setDataAvailableBannerOpen(false);
+						}}
+						sx={{
+							color: theme.palette.error.light,
+							borderColor: theme.palette.error.light,
+							'&:hover': {
+								borderColor: theme.palette.error.light,
+								color: theme.palette.error.light,
+							},
+							ml: { sm: 1, xs: 1 },
+						}}
+						startIcon={<DeleteOutlinedIcon />}
+					>
+						Clear Data
+					</Button>
+					<Button
+						variant='contained'
+						disableElevation
+						color='secondary'
+						sx={{ ml: { sm: 1, xs: 1 } }}
+						endIcon={<ArrowForwardIcon />}
+						onClick={() => navigate('/data-classification')}
+					>
+						Data classification
+					</Button>
 				</Box>
 			)}
 
