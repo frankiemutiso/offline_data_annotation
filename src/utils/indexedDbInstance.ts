@@ -348,3 +348,10 @@ export const updateDocument = (document: ColumnDataType) => {
 		console.log('Error', request.error);
 	};
 };
+
+export const clearDatabase = () => {
+	clearColumns();
+	clearDocumentMetadata();
+	clearLabels();
+	clearDocuments();
+};
