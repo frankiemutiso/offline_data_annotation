@@ -100,7 +100,10 @@ function DataCard({ cardDetails }: DataCardType) {
 
 	return (
 		<Card
-			sx={{ maxWidth: { sm: 345 }, borderRadius: theme.shape.borderRadius }}
+			sx={{
+				maxWidth: { sm: 345 },
+				borderRadius: theme.shape.borderRadius,
+			}}
 		>
 			<CardContent sx={{ wordBreak: 'break-word' }}>
 				<Typography variant='body1'>{document[selectedColumn]}</Typography>

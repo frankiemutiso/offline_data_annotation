@@ -19,7 +19,7 @@ type FileType = {
 	size: number;
 };
 
-const openRequest = window.indexedDB.open('data_annotator_db', 2);
+const openRequest = window.indexedDB.open('data_annotator_db', 4);
 
 let db!: IDBDatabase;
 
@@ -27,7 +27,18 @@ openRequest.onupgradeneeded = function () {
 	db = openRequest.result;
 
 	if (!db.objectStoreNames.contains('documents')) {
-		db.createObjectStore('documents', { keyPath: 'id', autoIncrement: true });
+		const docsObjectStore = db.createObjectStore('documents', {
+			keyPath: 'id',
+			autoIncrement: true,
+		});
+		docsObjectStore.createIndex('label_idx', 'label');
+	} else {
+		const transaction = db.transaction('documents', 'readonly');
+		const objectStore = transaction.objectStore('documents');
+
+		if (!objectStore.indexNames.contains('label_idx')) {
+			objectStore.createIndex('label_idx', 'label');
+		}
 	}
 
 	if (!db.objectStoreNames.contains('labels')) {
@@ -93,7 +104,25 @@ export const getAllDocuments = async () => {
 			return result[0];
 		})
 		.catch((error) => {
-			console.error('Error getting documents:', error);
+			console.error('Error getting documents: ', error);
+		});
+};
+
+export const getLabelledDocuments = async () => {
+	const transaction = db.transaction('documents', 'readonly');
+	const objectStore = transaction.objectStore('documents');
+	const labelIndex = objectStore.index('label_idx');
+
+	return new Promise<FileDataType[]>((resolve, reject) => {
+		const request = labelIndex.getAll();
+		request.onsuccess = () => resolve(request.result);
+		request.onerror = () => reject(request.error);
+	})
+		.then((result) => {
+			return result;
+		})
+		.catch((error) => {
+			console.error('Error getting labelled documents: ', error);
 		});
 };
 

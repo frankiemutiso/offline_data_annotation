@@ -39,9 +39,13 @@ function Cards() {
 
 	return (
 		<Box>
-			<Grid container spacing={2}>
+			<Grid
+				container
+				spacing={2}
+				sx={{ display: 'flex', alignItems: 'stretch' }}
+			>
 				{documents?.map((x, i) => (
-					<Grid item md={3} key={i}>
+					<Grid item md={3} key={i} sx={{ height: '100%' }}>
 						<DataCard cardDetails={x} />
 					</Grid>
 				))}

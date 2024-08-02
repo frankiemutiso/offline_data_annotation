@@ -307,7 +307,7 @@ function DataImportComponent({
 									)}
 									<Box>
 										<Typography variant='body1'>{fileDetails.name}</Typography>
-										<Typography variant='caption'>
+										<Typography variant='overline'>
 											{formatBytes(fileDetails.size)}
 										</Typography>
 									</Box>
