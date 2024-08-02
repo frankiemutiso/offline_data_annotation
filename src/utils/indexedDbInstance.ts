@@ -33,6 +33,8 @@ openRequest.onupgradeneeded = function () {
 		});
 		docsObjectStore.createIndex('label_idx', 'label');
 	} else {
+		if (!db) throw new Error('Database is null or undefined!');
+
 		const transaction = db.transaction('documents', 'readonly');
 		const objectStore = transaction.objectStore('documents');
 
