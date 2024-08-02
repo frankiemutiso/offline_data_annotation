@@ -9,11 +9,12 @@ This project is an offline data classification web application. It consists of t
 
 ## Features
 
-- Upload data from Excel or CSV files.
-- Select the columns to display.
-- Select the labels needed for data classification.
-- Displays data in cards with clickable labels
-- Stores data locally using IndexedDB for offline access.
+- Component to upload data from Excel or CSV files.
+- Column selection for data display.
+- Label selection for data classification.
+- Intuitive cards for data display and labeling.
+- Local data storage with IndexedDB for offline access.
+- Export functionality to download the labeled data.
 
 ## Installation
 
