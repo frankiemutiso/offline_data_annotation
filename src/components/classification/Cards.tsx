@@ -45,7 +45,7 @@ function Cards() {
 				sx={{ display: 'flex', alignItems: 'stretch' }}
 			>
 				{documents?.map((x, i) => (
-					<Grid item md={3} key={i} sx={{ height: '100%' }}>
+					<Grid item md={3} key={i} sx={{ height: 'auto', width: '100%' }}>
 						<DataCard cardDetails={x} />
 					</Grid>
 				))}

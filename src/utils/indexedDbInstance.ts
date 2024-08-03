@@ -19,28 +19,32 @@ type FileType = {
 	size: number;
 };
 
-const openRequest = window.indexedDB.open('data_annotator_db', 4);
+const openRequest = window.indexedDB.open('data_annotator_db', 5);
 
 let db!: IDBDatabase;
 
 openRequest.onupgradeneeded = function () {
 	db = openRequest.result;
 
-	if (!db.objectStoreNames.contains('documents')) {
-		const docsObjectStore = db.createObjectStore('documents', {
-			keyPath: 'id',
-			autoIncrement: true,
-		});
-		docsObjectStore.createIndex('label_idx', 'label');
-	} else {
-		if (!db) throw new Error('Database is null or undefined!');
+	try {
+		if (!db.objectStoreNames.contains('documents')) {
+			const docsObjectStore = db.createObjectStore('documents', {
+				keyPath: 'id',
+				autoIncrement: true,
+			});
+			docsObjectStore.createIndex('label_idx', 'label');
+		} else {
+			if (!db) throw new Error('Database is null or undefined!');
 
-		const transaction = db.transaction('documents', 'readonly');
-		const objectStore = transaction.objectStore('documents');
+			const transaction = db.transaction('documents', 'readonly');
+			const objectStore = transaction.objectStore('documents');
 
-		if (!objectStore.indexNames.contains('label_idx')) {
-			objectStore.createIndex('label_idx', 'label');
+			if (!objectStore.indexNames.contains('label_idx')) {
+				objectStore.createIndex('label_idx', 'label');
+			}
 		}
+	} catch (error) {
+		console.log('Error: ', error);
 	}
 
 	if (!db.objectStoreNames.contains('labels')) {

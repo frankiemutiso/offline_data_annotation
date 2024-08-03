@@ -101,7 +101,7 @@ function DataCard({ cardDetails }: DataCardType) {
 	return (
 		<Card
 			sx={{
-				maxWidth: { sm: 345 },
+				maxWidth: { sm: 345, height: '100%' },
 				borderRadius: theme.shape.borderRadius,
 			}}
 		>
